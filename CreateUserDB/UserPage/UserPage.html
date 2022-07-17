@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>users</title>
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+<style>
+    
+</style>
+
+</head>
+<body>
+<div class="container bg-warning text-center p-3">
+
+    <form id="formdata" action="" method="post">
+        <h1 class="my-4">USER FORM </h1>
+
+        <input type="text" placeholder="enter username" class="my-1 form-control UserName">
+        <br>
+        <input type="number" placeholder="enter age " class="my-1 form-control UserAge">
+        <br>
+        <input type="email" placeholder="enter email" class="my-1 form-control UserMail">
+        <br>
+        <button class="btn btn-success">Submit user data</button>
+    </form>
+
+</div>
+
+<h1 class="text-success text-center my-4">ALL USERS </h1>
+<hr>
+
+    
+
+    <div class=" carts container row">
+
+    
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+    
+    <script>
+
+let UserName=document.querySelector('.UserName');
+let UserAge=document.querySelector('.UserAge');
+let UserMail=document.querySelector('.UserMail')
+let userscart=document.querySelector('.carts');
+
+
+let formdata=document.querySelector('#formdata');
+
+formdata.addEventListener('submit',(e)=>{
+    e.preventDefault()
+    let obj={
+        name:UserName.value,
+        age:UserAge.value,
+        mailid:UserMail.value
+    }
+    
+    axios.post('http://localhost:1111/addnewuser',obj)
+    .then(result=>{
+        console.log(result);
+        alert(' details saved successfully ')
+        UserName.textContent=''
+        UserAge.textContent=''
+        UserMail.textContent=''
+
+        location.reload()
+
+
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+})
+let deleteuser=document.querySelector('.deleteuser')
+
+userscart.addEventListener('click',(e)=>{
+    let deleteid=e.target.parentElement.id;
+
+    
+               axios.delete(`http://localhost:1111/deleteusers/${deleteid}`)
+               .then(result=>{
+                location.reload()
+               })
+               .catch(err=>{
+                console.log(err);
+               })
+    
+})
+
+
+axios.get('http://localhost:1111/showusers')
+.then(result=>{
+
+    console.log(result);
+
+    let res=''
+    for (let i = 0; i < result.data.length; i++) {
+
+
+        res+=`        <div class="col-md-4 mt-3">
+            <div class="card bg-dark"> 
+            
+                <div class="card-body p-2" id=${result.data[i].id}>
+
+                    <h5 class="text-success mt-4">user name : ${result.data[i].name}</h5>
+                    <h5 class="text-primary mt-4">user age : ${result.data[i].age}</h5>
+                    <h6 class="text-danger mt-4">user mail : ${result.data[i].mailid}</h6>
+                    <button class="deleteuser btn btn-danger my-4">Delete User </button>
+
+                
+                </div>
+
+
+            </div>
+        </div>
+`     
+    }
+
+
+
+    userscart.innerHTML=res
+    
+    
+
+    
+})
+.catch(err=>{
+    console.log(err);
+})
+
+    </script>
+</body>
+</html>
